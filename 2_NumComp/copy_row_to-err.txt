@@ -1,0 +1,44 @@
+module A = Owl_base_dense_ndarray.S
+
+module M = Owl_algodiff_generic.Make(A)
+open M
+
+let f x = Maths.(cos x |> sum')
+let x = Mat.uniform 1 5
+
+let f = grad f
+
+let y = f x |> primal
+let m = col_num y
+let n = col_num x
+let z = A.empty [|m;n|]
+
+let foo = 
+Array.init m (fun i ->
+    let v = A.zeros [|1;m|] in
+    A.set v [|0;i|] 1.;
+    jacobianTv f x (Arr v)
+)
+
+Array.iteri (fun i v ->
+    match v with
+    | Arr v -> A.print v (* A.copy_row_to v  z i *)
+    | _     -> failwith "error: jacobian"
+) foo
+ 
+A.copy_row_to (foo.(0) |> unpack_arr) z 0 
+(* --> error: Genarray.blit dimension mismatch *)
+
+(*------*)
+
+let vec = foo.(0) |> unpack_arr
+let varr = z (* 5 x 5 *)
+let ind = 0
+
+open Bigarray
+
+let copy_row_to vec varr ind =
+  let dims = shape varr in
+  let _ = _check_is_matrix dims in
+  (Genarray.blit vec (Genarray.slice_left varr [|ind|]))
+

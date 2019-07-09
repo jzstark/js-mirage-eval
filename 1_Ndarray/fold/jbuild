@@ -1,0 +1,13 @@
+(jbuild_version 1)
+
+(executables
+  ((names (fold_eval))
+  (libraries (owl_base))
+  (modes (byte native))
+  ))
+
+(rule
+  ((targets (fold_eval.js))
+    (action
+    (run ${bin:js_of_ocaml} --noruntime ${lib:js_of_ocaml-compiler:runtime.js}
+      --source-map ${path:fold_eval.bc} -o ${@} --pretty))))

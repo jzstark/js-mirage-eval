@@ -1,0 +1,7 @@
+(jbuild_version 1)
+
+(executables
+  ((names (map_eval_owl))
+  (libraries (owl))
+  (modes (byte native))
+  ))

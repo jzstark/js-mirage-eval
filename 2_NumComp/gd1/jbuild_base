@@ -1,0 +1,13 @@
+(jbuild_version 1)
+
+(executables
+  ((names (gd_base))
+  (libraries (owl_base))
+  (modes (byte native))
+  ))
+
+(rule
+  ((targets (gd_base.js))
+    (action
+    (run ${bin:js_of_ocaml} --noruntime ${lib:js_of_ocaml-compiler:runtime.js}
+      --source-map ${path:gd_base.bc} -o ${@} --pretty))))

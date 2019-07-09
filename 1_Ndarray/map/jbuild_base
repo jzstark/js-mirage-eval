@@ -1,0 +1,14 @@
+(jbuild_version 1)
+
+(executables
+  ((names (map_eval))
+  (libraries (owl_base))
+  (modes (byte native))
+  ))
+
+(rule
+  ((targets (map_eval.js))
+    (action
+    (run ${bin:js_of_ocaml} --noruntime ${lib:js_of_ocaml-compiler:runtime.js}
+      --source-map ${path:map_eval.bc} -o ${@} --pretty))))
+
